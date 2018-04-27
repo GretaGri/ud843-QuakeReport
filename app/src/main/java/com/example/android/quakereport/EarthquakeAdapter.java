@@ -43,6 +43,9 @@ public class EarthquakeAdapter extends ArrayAdapter <Earthquake> {
             TextView date = listItemView.findViewById(R.id.date);
             date.setText(thisEarthquake.getDate());
 
+            TextView time = listItemView.findViewById(R.id.time);
+            time.setText(thisEarthquake.getTime());
+
             // Return the whole list item layout so that it can be shown in the ListView.
             return listItemView;
         }
