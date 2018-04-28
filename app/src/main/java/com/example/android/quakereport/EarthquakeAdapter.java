@@ -37,8 +37,22 @@ public class EarthquakeAdapter extends ArrayAdapter <Earthquake> {
             TextView mag = listItemView.findViewById(R.id.mag);
             mag.setText(thisEarthquake.getMag().toString());
 
-            TextView place = listItemView.findViewById(R.id.place);
-            place.setText(thisEarthquake.getPlace());
+
+            String place = thisEarthquake.getPlace();
+            String place1;
+            String place2;
+            if (place.contains("of")){
+            place1 = place.substring(0, place.indexOf("of")+2);
+            place2 = place.substring(place.indexOf("of")+2,place.length());
+            }
+            else {place1 = getContext().getString(R.string.near);
+            place2 = place;}
+
+            TextView locationOffset = listItemView.findViewById(R.id.location_offset);
+            locationOffset.setText(place1);
+
+            TextView primaryLocation = listItemView.findViewById(R.id.primary_location);
+            primaryLocation.setText(place2);
 
             TextView date = listItemView.findViewById(R.id.date);
             date.setText(thisEarthquake.getDate());

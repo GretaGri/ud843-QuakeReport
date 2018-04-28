@@ -66,6 +66,7 @@ public class QueryUtils {
                 JSONObject properties = current.getJSONObject("properties");
                 Double mag = properties.getDouble("mag");
                 String place = properties.getString("place");
+
                 long time = properties.getLong("time");
                 //calling date constructor to convert time in milliseconds to date
                 Date dateObject = new Date(time);
@@ -73,7 +74,7 @@ public class QueryUtils {
                 //representation according to the given format.
                 SimpleDateFormat dateFormatter = new SimpleDateFormat("MMM DD, yyyy");
                 String dateToDisplay = dateFormatter.format(dateObject);
-                SimpleDateFormat timeFormatter = new SimpleDateFormat("HH:mm:ss");
+                SimpleDateFormat timeFormatter = new SimpleDateFormat("HH:mm a");
                 String timeToDisplay = timeFormatter.format(dateObject);
                 //add those values to arrayList
                 earthquakes.add(new Earthquake(mag, place, dateToDisplay, timeToDisplay));
