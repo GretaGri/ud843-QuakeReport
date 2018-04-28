@@ -64,7 +64,7 @@ public class QueryUtils {
 
                 JSONObject current = features.getJSONObject(i);
                 JSONObject properties = current.getJSONObject("properties");
-                Double mag = properties.getDouble("mag");
+                double mag = properties.getDouble("mag");
                 String place = properties.getString("place");
 
                 long time = properties.getLong("time");

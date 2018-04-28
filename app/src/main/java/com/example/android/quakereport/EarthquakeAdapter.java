@@ -10,6 +10,7 @@ import android.widget.ArrayAdapter;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import java.text.DecimalFormat;
 import java.util.ArrayList;
 
 /**
@@ -34,8 +35,12 @@ public class EarthquakeAdapter extends ArrayAdapter <Earthquake> {
 
             Earthquake thisEarthquake = getItem(position);
 
+            double magnitude = thisEarthquake.getMag();
+            DecimalFormat formatter = new DecimalFormat("0.0");
+            String output = formatter.format(magnitude);
+
             TextView mag = listItemView.findViewById(R.id.mag);
-            mag.setText(thisEarthquake.getMag().toString());
+            mag.setText(output);
 
 
             String place = thisEarthquake.getPlace();
