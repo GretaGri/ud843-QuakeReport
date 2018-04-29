@@ -10,12 +10,14 @@ public class Earthquake {
    private String place;
    private String date;
    private String time;
+   private String url;
 
-    public Earthquake(double magnitude, String EarquakePlace, String EarthquakeDate, String EarthquakeTime) {
+    public Earthquake(double magnitude, String EarquakePlace, String EarthquakeDate, String EarthquakeTime, String UrlWithDetails) {
         mag = magnitude;
         place = EarquakePlace;
         date = EarthquakeDate;
         time = EarthquakeTime;
+        url = UrlWithDetails;
     }
 
     public double getMag () {
@@ -28,4 +30,5 @@ public class Earthquake {
         return date;
     }
     public String getTime () {return time;}
+    public String getUrl () {return url;}
 }

@@ -76,8 +76,10 @@ public class QueryUtils {
                 String dateToDisplay = dateFormatter.format(dateObject);
                 SimpleDateFormat timeFormatter = new SimpleDateFormat("HH:mm a");
                 String timeToDisplay = timeFormatter.format(dateObject);
+
+                String urlWithDetails = properties.getString("url");
                 //add those values to arrayList
-                earthquakes.add(new Earthquake(mag, place, dateToDisplay, timeToDisplay));
+                earthquakes.add(new Earthquake(mag, place, dateToDisplay, timeToDisplay, urlWithDetails));
 
             }
 
