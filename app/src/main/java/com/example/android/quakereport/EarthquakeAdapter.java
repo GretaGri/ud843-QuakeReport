@@ -12,6 +12,7 @@ import android.widget.TextView;
 import java.math.RoundingMode;
 import java.text.DecimalFormat;
 import java.util.ArrayList;
+import java.util.List;
 import java.util.Set;
 
 import android.graphics.drawable.GradientDrawable;
@@ -22,7 +23,7 @@ import android.graphics.drawable.GradientDrawable;
 
 public class EarthquakeAdapter extends ArrayAdapter<Earthquake> {
 
-    public EarthquakeAdapter(Context context, ArrayList<Earthquake> earthquakes) {
+    public EarthquakeAdapter(Context context, List<Earthquake> earthquakes) {
         super(context, 0, earthquakes);
     }
 
