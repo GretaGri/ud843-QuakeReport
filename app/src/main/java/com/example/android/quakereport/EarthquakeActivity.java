@@ -25,6 +25,7 @@ import android.util.Log;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ListView;
+import android.widget.ProgressBar;
 import android.widget.TextView;
 
 import java.util.ArrayList;
@@ -35,6 +36,7 @@ public class EarthquakeActivity extends AppCompatActivity implements LoaderManag
     private static final String USGS_REQUEST_URL = "https://earthquake.usgs.gov/fdsnws/event/1/query?format=geojson&orderby=time&minmag=5&limit=10";
     private EarthquakeAdapter adapter;
     private TextView empty;
+    private ProgressBar loadingSpinner;
     /**
      * Constant value for the earthquake loader ID. We can choose any integer.
      * This really only comes into play if you're using multiple loaders.
@@ -51,6 +53,8 @@ public class EarthquakeActivity extends AppCompatActivity implements LoaderManag
         // Find a reference to the empty {@link TextView} in the layout
         empty = findViewById(R.id.empty);
         earthquakeListView.setEmptyView(empty);
+        // Find a reference to the loading spinner{@link ProgressBar} in the layout
+        loadingSpinner = findViewById(R.id.loading_spinner);
 
         // Create a new {@link ArrayAdapter} of earthquakes
         adapter = new EarthquakeAdapter(EarthquakeActivity.this, new ArrayList<Earthquake>());
@@ -96,9 +100,11 @@ public class EarthquakeActivity extends AppCompatActivity implements LoaderManag
         // data set. This will trigger the ListView to update.
         if (earthquakes != null && !earthquakes.isEmpty()) {
            adapter.addAll(earthquakes);
+           loadingSpinner.setVisibility(View.GONE);
             Log.d (LOG_TAG, "on Load Finished");
         }
         empty.setText(R.string.empty_list);
+        loadingSpinner.setVisibility(View.GONE);
     }
 
     @Override
