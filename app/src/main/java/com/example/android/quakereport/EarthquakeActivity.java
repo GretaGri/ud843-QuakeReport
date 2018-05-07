@@ -25,6 +25,7 @@ import android.util.Log;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ListView;
+import android.widget.TextView;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -33,6 +34,7 @@ public class EarthquakeActivity extends AppCompatActivity implements LoaderManag
     private static final String LOG_TAG = EarthquakeActivity.class.getName();
     private static final String USGS_REQUEST_URL = "https://earthquake.usgs.gov/fdsnws/event/1/query?format=geojson&orderby=time&minmag=5&limit=10";
     private EarthquakeAdapter adapter;
+    private TextView empty;
     /**
      * Constant value for the earthquake loader ID. We can choose any integer.
      * This really only comes into play if you're using multiple loaders.
@@ -46,6 +48,9 @@ public class EarthquakeActivity extends AppCompatActivity implements LoaderManag
 
         // Find a reference to the {@link ListView} in the layout
         ListView earthquakeListView = findViewById(R.id.list);
+        // Find a reference to the empty {@link TextView} in the layout
+        empty = findViewById(R.id.empty);
+        earthquakeListView.setEmptyView(empty);
 
         // Create a new {@link ArrayAdapter} of earthquakes
         adapter = new EarthquakeAdapter(EarthquakeActivity.this, new ArrayList<Earthquake>());
@@ -53,6 +58,7 @@ public class EarthquakeActivity extends AppCompatActivity implements LoaderManag
         // Set the adapter on the {@link ListView}
         // so the list can be populated in the user interface
         earthquakeListView.setAdapter(adapter);
+
 
         getSupportLoaderManager().initLoader(EARTHQUAKE_LOADER_ID, null, this);
         Log.d (LOG_TAG, "itintLoader");
@@ -89,9 +95,10 @@ public class EarthquakeActivity extends AppCompatActivity implements LoaderManag
         // If there is a valid list of {@link Earthquake}s, then add them to the adapter's
         // data set. This will trigger the ListView to update.
         if (earthquakes != null && !earthquakes.isEmpty()) {
-            adapter.addAll(earthquakes);
+           adapter.addAll(earthquakes);
             Log.d (LOG_TAG, "on Load Finished");
         }
+        empty.setText(R.string.empty_list);
     }
 
     @Override
