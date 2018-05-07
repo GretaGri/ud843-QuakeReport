@@ -22,9 +22,13 @@ import android.graphics.drawable.GradientDrawable;
  */
 
 public class EarthquakeAdapter extends ArrayAdapter<Earthquake> {
+    List<Earthquake> earthquakes;
+    private LayoutInflater inflater;
 
     public EarthquakeAdapter(Context context, List<Earthquake> earthquakes) {
         super(context, 0, earthquakes);
+        this.earthquakes = earthquakes;
+        inflater = LayoutInflater.from(context);
     }
 
     @NonNull
@@ -33,7 +37,7 @@ public class EarthquakeAdapter extends ArrayAdapter<Earthquake> {
         // Check if an existing view is being reused, otherwise inflate the view
         View listItemView = convertView;
         if (listItemView == null) {
-            listItemView = LayoutInflater.from(getContext()).inflate(
+            listItemView = inflater.inflate(
                     R.layout.list_item, parent, false);
         }
 
@@ -124,5 +128,10 @@ public class EarthquakeAdapter extends ArrayAdapter<Earthquake> {
                 break;
         }
         return magnitudeColor;
+    }
+
+    public void setEarthquake(List<Earthquake> data) {
+        earthquakes.addAll(data);
+        notifyDataSetChanged();
     }
 }

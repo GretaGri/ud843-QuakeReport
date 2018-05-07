@@ -19,8 +19,12 @@ import android.content.Intent;
 import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Bundle;
+import android.support.v4.app.FragmentActivity;
+import android.support.v4.app.LoaderManager;
+import android.support.v4.content.Loader;
 import android.support.v7.app.AppCompatActivity;
 import android.view.View;
+import android.widget.Adapter;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.ListView;
@@ -29,68 +33,63 @@ import android.widget.TextView;
 import java.util.ArrayList;
 import java.util.List;
 
-public class EarthquakeActivity extends AppCompatActivity {
+public class EarthquakeActivity extends AppCompatActivity implements LoaderManager.LoaderCallbacks<List<Earthquake>> {
 
     private static final String USGS_REQUEST_URL = "https://earthquake.usgs.gov/fdsnws/event/1/query?format=geojson&orderby=time&minmag=5&limit=10";
-    private httpRequest mhttpRequest;
+    private EarthquakeAdapter adapter;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.earthquake_activity);
 
-        // Perform the HTTP request for earthquake data and process the response.
-        mhttpRequest = new httpRequest();
-        mhttpRequest.execute(USGS_REQUEST_URL);
-
-    }
-    /**
-     * Update the UI with the given earthquake information.
-     */
-    private void updateUi(List<Earthquake> earthquakes) {
-
-       final List<Earthquake> earthquakesFinal = earthquakes;
         // Find a reference to the {@link ListView} in the layout
         ListView earthquakeListView = findViewById(R.id.list);
 
         // Create a new {@link ArrayAdapter} of earthquakes
-        EarthquakeAdapter adapter = new EarthquakeAdapter(this, earthquakes);
+        adapter = new EarthquakeAdapter(EarthquakeActivity.this, new ArrayList<Earthquake>());
 
         // Set the adapter on the {@link ListView}
         // so the list can be populated in the user interface
         earthquakeListView.setAdapter(adapter);
 
+        getSupportLoaderManager().initLoader(1, null, this);
 
         earthquakeListView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                String url = earthquakesFinal.get(position).getUrl();
+                String url = adapter.getItem(position).getUrl();
                 if (url!=null){
                     Intent intent = new Intent(Intent.ACTION_VIEW,
                             Uri.parse(url));
                     startActivity(intent);}
             }
         });
-
     }
 
-    private class httpRequest extends AsyncTask<String, Void, List<Earthquake>> {
-        @Override
-        protected List<Earthquake> doInBackground(String... urls) {
 
-            if (urls.length < 1||urls[0] == null){
-                return null;
-            }
+    @Override
+    public Loader<List<Earthquake>> onCreateLoader(int id, Bundle args) {
+        return new EarthquakeLoader(EarthquakeActivity.this, USGS_REQUEST_URL);
+    }
 
-            List <Earthquake> earthquake = QueryUtils.fetchEarthquakeData(urls[0]);
-            return earthquake;
+    @Override
+    public void onLoadFinished(Loader<List<Earthquake>> loader, List<Earthquake> earthquake) {
+        if (earthquake == null || earthquake.isEmpty()) {
+            return;
         }
-        protected void onPostExecute(List <Earthquake> earthquake) {
-            if (earthquake == null || earthquake.isEmpty()) {
-                return;
-            }
-            // Update the information displayed to the user.
-            updateUi(earthquake);
+        // Clear the adapter of previous earthquake data
+        adapter.clear();
+
+        // If there is a valid list of {@link Earthquake}s, then add them to the adapter's
+        // data set. This will trigger the ListView to update.
+        if (earthquake != null && !earthquake.isEmpty()) {
+            adapter.addAll(earthquake);
         }
+    }
+
+    @Override
+    public void onLoaderReset(Loader<List<Earthquake>> loader) {
+        adapter.setEarthquake(new ArrayList<Earthquake>());
     }
 }
