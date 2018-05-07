@@ -15,7 +15,10 @@
  */
 package com.example.android.quakereport;
 
+import android.content.Context;
 import android.content.Intent;
+import android.net.ConnectivityManager;
+import android.net.NetworkInfo;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.v4.app.LoaderManager;
@@ -32,6 +35,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class EarthquakeActivity extends AppCompatActivity implements LoaderManager.LoaderCallbacks<List<Earthquake>> {
+    private static final String DEBUG_TAG = "NetworkStatusExample";
     private static final String LOG_TAG = EarthquakeActivity.class.getName();
     private static final String USGS_REQUEST_URL = "https://earthquake.usgs.gov/fdsnws/event/1/query?format=geojson&orderby=time&minmag=5&limit=10";
     private EarthquakeAdapter adapter;
@@ -48,13 +52,25 @@ public class EarthquakeActivity extends AppCompatActivity implements LoaderManag
         super.onCreate(savedInstanceState);
         setContentView(R.layout.earthquake_activity);
 
-        // Find a reference to the {@link ListView} in the layout
+        //Check the device network connection
+        ConnectivityManager connMgr = (ConnectivityManager)
+                getSystemService(Context.CONNECTIVITY_SERVICE);
+        NetworkInfo networkInfo = connMgr.getNetworkInfo(ConnectivityManager.TYPE_WIFI);
+        boolean isWifiConn = networkInfo.isConnected();
+        networkInfo = connMgr.getNetworkInfo(ConnectivityManager.TYPE_MOBILE);
+        boolean isMobileConn = networkInfo.isConnected();
+        Log.d(DEBUG_TAG, "Wifi connected: " + isWifiConn);
+        Log.d(DEBUG_TAG, "Mobile connected: " + isMobileConn);
+
+       // Find a reference to the {@link ListView} in the layout
         ListView earthquakeListView = findViewById(R.id.list);
         // Find a reference to the empty {@link TextView} in the layout
         empty = findViewById(R.id.empty);
         earthquakeListView.setEmptyView(empty);
         // Find a reference to the loading spinner{@link ProgressBar} in the layout
         loadingSpinner = findViewById(R.id.loading_spinner);
+
+
 
         // Create a new {@link ArrayAdapter} of earthquakes
         adapter = new EarthquakeAdapter(EarthquakeActivity.this, new ArrayList<Earthquake>());
@@ -63,20 +79,25 @@ public class EarthquakeActivity extends AppCompatActivity implements LoaderManag
         // so the list can be populated in the user interface
         earthquakeListView.setAdapter(adapter);
 
+        if (!isWifiConn&&!isMobileConn){
+            loadingSpinner.setVisibility(View.GONE);
+            empty.setText(R.string.no_connection);
+        } else {
+            getSupportLoaderManager().initLoader(EARTHQUAKE_LOADER_ID, null, this);
+            Log.d(LOG_TAG, "itintLoader");
 
-        getSupportLoaderManager().initLoader(EARTHQUAKE_LOADER_ID, null, this);
-        Log.d (LOG_TAG, "itintLoader");
-
-        earthquakeListView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
-            @Override
-            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                String url = adapter.getItem(position).getUrl();
-                if (url!=null){
-                    Intent intent = new Intent(Intent.ACTION_VIEW,
-                            Uri.parse(url));
-                    startActivity(intent);}
-            }
-        });
+            earthquakeListView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+                @Override
+                public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+                    String url = adapter.getItem(position).getUrl();
+                    if (url != null) {
+                        Intent intent = new Intent(Intent.ACTION_VIEW,
+                                Uri.parse(url));
+                        startActivity(intent);
+                    }
+                }
+            });
+        }
     }
 
 
