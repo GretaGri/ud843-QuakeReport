@@ -39,6 +39,14 @@ public class QueryUtils {
     }
 
     public static List<Earthquake> fetchEarthquakeData(String requestUrl) {
+     /**
+      * To force the background thread to pause execution and wait for 2 seconds so that we can see how spinner works.
+        try {
+            Thread.sleep(2000);
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
+      */
         Log.d (LOG_TAG, "fetch Earthquake data");
         // Create URL object
         URL url = createUrl(requestUrl);
