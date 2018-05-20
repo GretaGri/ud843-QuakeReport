@@ -25,11 +25,15 @@ import android.support.v4.app.LoaderManager;
 import android.support.v4.content.Loader;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
+import android.view.Menu;
+import android.view.MenuItem;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ListView;
 import android.widget.ProgressBar;
 import android.widget.TextView;
+
+
 
 import java.util.ArrayList;
 import java.util.List;
@@ -53,11 +57,11 @@ public class EarthquakeActivity extends AppCompatActivity implements LoaderManag
         setContentView(R.layout.earthquake_activity);
 
         //Check the device network connection
-        ConnectivityManager connMgr = (ConnectivityManager)
+        ConnectivityManager connManager = (ConnectivityManager)
                 getSystemService(Context.CONNECTIVITY_SERVICE);
-        NetworkInfo networkInfo = connMgr.getNetworkInfo(ConnectivityManager.TYPE_WIFI);
+        NetworkInfo networkInfo = connManager.getNetworkInfo(ConnectivityManager.TYPE_WIFI);
         boolean isWifiConn = networkInfo.isConnected();
-        networkInfo = connMgr.getNetworkInfo(ConnectivityManager.TYPE_MOBILE);
+        networkInfo = connManager.getNetworkInfo(ConnectivityManager.TYPE_MOBILE);
         boolean isMobileConn = networkInfo.isConnected();
         Log.d(DEBUG_TAG, "Wifi connected: " + isWifiConn);
         Log.d(DEBUG_TAG, "Mobile connected: " + isMobileConn);
@@ -84,7 +88,7 @@ public class EarthquakeActivity extends AppCompatActivity implements LoaderManag
             empty.setText(R.string.no_connection);
         } else {
             getSupportLoaderManager().initLoader(EARTHQUAKE_LOADER_ID, null, this);
-            Log.d(LOG_TAG, "itintLoader");
+            Log.d(LOG_TAG, "initLoader");
 
             earthquakeListView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
                 @Override
@@ -99,7 +103,6 @@ public class EarthquakeActivity extends AppCompatActivity implements LoaderManag
             });
         }
     }
-
 
     @Override
     public Loader<List<Earthquake>> onCreateLoader(int id, Bundle args) {
@@ -135,4 +138,24 @@ public class EarthquakeActivity extends AppCompatActivity implements LoaderManag
         adapter.setEarthquake(new ArrayList<Earthquake>());
         Log.d (LOG_TAG, "onLoader Reset");
     }
+
+    @Override
+    // This method initialize the contents of the Activity's options menu.
+    public boolean onCreateOptionsMenu(Menu menu) {
+        // Inflate the Options Menu we specified in XML
+        getMenuInflater().inflate(R.menu.main, menu);
+        return true;
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        int id = item.getItemId();
+        if (id == R.id.action_settings) {
+            Intent settingsIntent = new Intent(this, SettingsActivity.class);
+            startActivity(settingsIntent);
+            return true;
+        }
+        return super.onOptionsItemSelected(item);
+    }
+
 }
